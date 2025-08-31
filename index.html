@@ -1,13 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>服薬指導ビュー（閲覧専用）</title>
+    <meta name="theme-color" content="#0ea5e9" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <style>
+      body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#f7fafc;color:#0f172a}
+      header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 16px;z-index:10}
+      main{max-width:900px;margin:0 auto;padding:16px;display:grid;gap:16px}
+      .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+      .row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+      select,input,button{padding:8px;border-radius:8px;border:1px solid #cbd5e1;background:#fff}
+      button.primary{background:#0ea5e9;border-color:#0ea5e9;color:#fff}
+      .badge{display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:2px 8px;font-size:12px;background:#f1f5f9;margin-right:6px}
+      .list{display:grid;gap:12px}
+      .item{border:1px solid #e2e8f0;border-radius:10px;padding:12px}
+      .muted{color:#64748b}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <header class="row">
+      <h1 style="margin:0">外国人向け 服薬指導ビュー（閲覧専用）</h1>
+      <div>
+        <label>表示/音声の言語：
+          <select id="lang"></select>
+        </label>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <div class="row">
+          <h2 style="margin:0">指導リスト</h2>
+          <div class="muted">（ローカル保存 → 表示時に辞書をSupabaseから取得 / 未訳は［未訳］）</div>
+        </div>
+        <div class="row">
+          <div>
+            <button id="addDemo" class="primary">デモ項目を追加</button>
+            <button id="clear" class="">すべて削除</button>
+          </div>
+          <div class="muted">🌞朝 ☀昼 🌙夜 🌜寝る前</div>
+        </div>
+        <div id="list" class="list"></div>
+        <p id="empty" class="muted">アイテムがありません。</p>
+      </section>
+    </main>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

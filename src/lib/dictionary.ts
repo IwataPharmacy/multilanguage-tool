@@ -1,42 +1,26 @@
-// src/lib/dictionary.ts
+import { createStore, get as idbGet, set as idbSet } from "idb-keyval";
 import { supabase } from "./supabase";
-import { set as idbSet, get as idbGet, createStore } from "idb-keyval";
 
-const db = createStore("rx-guide-db","kv");
+const db = createStore("rx-view-db", "kv");
 
-export type DictEntry = { key_text: string; lang: string; text: string; needs_review?: boolean };
-
-export async function getDict(key: string, lang: string) {
-  const cacheKey = `dict:${key}:${lang}`;
+export async function getDictText(key_text: string, lang: string): Promise<string> {
+  const cacheKey = `dict:${key_text}:${lang}`;
   const cached = await idbGet(cacheKey, db);
-  if (cached) return cached as string;
+  if (typeof cached === "string") return cached;
 
   const { data, error } = await supabase
     .from("dictionary")
     .select("text")
-    .eq("key_text", key)
+    .eq("key_text", key_text)
     .eq("lang", lang)
     .maybeSingle();
-  if (error) throw error;
+
+  if (error) {
+    console.warn("dict fetch error", error);
+    return "";
+  }
 
   const text = data?.text ?? "";
   await idbSet(cacheKey, text, db);
   return text;
-}
-
-export async function upsertDict(entry: DictEntry) {
-  const { data, error } = await supabase
-    .from("dictionary")
-    .upsert({ 
-      key_text: entry.key_text, 
-      lang: entry.lang, 
-      text: entry.text, 
-      needs_review: !!entry.needs_review 
-    }, { onConflict: "key_text,lang" })
-    .select()
-    .maybeSingle();
-  if (error) throw error;
-  // cache更新
-  await idbSet(`dict:${entry.key_text}:${entry.lang}`, entry.text, db);
-  return data;
 }
