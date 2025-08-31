@@ -93,9 +93,9 @@ function Card({ item, lang, onDelete }: { item: Item; lang: Lang; onDelete: (id:
   const [tDays, setTDays] = useState<string>("");
 
   useEffect(() => {
-    getDictText(item.drugClass, lang).then(t => setTDrug(t || "［未訳］"));
-    getDictText(`${item.timesPerDay}回/日`, lang).then(t => setTTimes(t || "［未訳］"));
-    getDictText("for-days", lang).then(t => setTDays((t || "［未訳］").replace("{n}", String(item.days))));
+    getDictText("drug_class", item.drugClass, lang).then(t => setTDrug(t || "［未訳］"));
+    getDictText("dosage_label", `${item.timesPerDay}回/日`, lang).then(t => setTTimes(t || "［未訳］"));
+    getDictText("days_template", "for-days", lang).then(t => setTDays((t || "［未訳］").replace("{n}", String(item.days))));
   }, [item, lang]);
 
   const timeline = ["🌞", "☀", "🌙", "🌜"].slice(0, item.timesPerDay).join(" ");
